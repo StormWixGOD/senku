@@ -1,0 +1,18 @@
+# Desactivar la indexacion de directorios y http_code 403
+Options -Indexes
+IndexIgnore *
+
+#prevenir el acceso a ciertos archivos
+<FilesMatch "\.(htaccess|htpasswd|ini|phps|log|bak|txt|sql|json|lock|env)$">
+ Order Allow,Deny
+ Deny from all
+</FilesMatch>
+
+# Eliminar la extension .php de los archivos
+<IfModule mod_rewrite.c>
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php
+#RewriteRule ^([a-z]+)/?$ $1.php [NC]
+</IfModule>
