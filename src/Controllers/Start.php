@@ -16,7 +16,7 @@ class Start {
 
     private string $path;
 
-    public function __construct(string  $app_path, bool $use_db = true, bool $use_webhook = true)
+    public function __construct(string  $app_path, bool $use_db = true, bool $use_webhook = true, bool $use_updates = false)
     {
         $dotenv = \Dotenv\Dotenv::createImmutable($app_path);
         $dotenv->load();
@@ -26,6 +26,7 @@ class Start {
         $this->Server();
         
         if ($use_webhook) $this->up = $this->bot->GetData();
+        if ($use_updates) $this->up = $this->bot->GetUpdates();
         if ($use_db) $this->Db();
     }
 

@@ -28,15 +28,15 @@ class Bot {
 
     /**
      * Send request to telegram api
-     * @return array|string
      */
-    private function request(string $method, ?array $datas=[], bool $decode = true) {
+    private function request(string $method, ?array $datas=[], bool $decode = true):mixed
+    {
         $url = $this->endpoint . $method;
         $this->res = Request::Post($url, null, $datas)['response'];
         $this->result = ($decode) ? json_decode($this->res) : $this->res;
         if (!$this->result->ok) {
             error_log('[bot] Method ' . $method . ' failed: ' . json_encode($datas));
-            error_log($this->result->description);
+            error_log('[bot] Description: ' . $this->result->description);
         }
         return $this->result;
     }
@@ -57,6 +57,20 @@ class Bot {
         $this->content = file_get_contents('php://input') or die('No body');
         $this->update  = ($decode) ? json_decode($this->content) : $this->content;
 
+        return $this->update;
+    }
+
+    /**
+     * Receive incoming updates using long polling 
+     * @see https://core.telegram.org/bots/api#getupdates
+     */
+    public function GetUpdates(bool $decode = true, int $limit = 1)
+    {
+        $updates = $this->request('getUpdates', ['limit' => $limit]);
+        if ($updates->ok) {
+            $this->content = json_encode($updates->result[0]);
+            $this->update = ($decode) ? json_decode($this->content) : $this->content;
+        }
         return $this->update;
     }
 }
