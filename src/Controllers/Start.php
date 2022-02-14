@@ -16,7 +16,7 @@ class Start {
 
     private string $path;
 
-    public function __construct(string  $app_path, bool $use_db, bool $use_webhook)
+    public function __construct(string  $app_path, bool $use_db = true, bool $use_webhook = true)
     {
         $dotenv = \Dotenv\Dotenv::createImmutable($app_path);
         $dotenv->load();
@@ -34,7 +34,7 @@ class Start {
      */
     private function Server()
     {
-        Logger::Activate($this->path . 'src/logs/php-error.log', $_ENV['MAX_EXECUTION_TIME']);
+        Logger::Activate($this->path . '/src/logs/php-error.log', $_ENV['MAX_EXECUTION_TIME']);
         $this->server->SetTimeZone($_ENV['TIME_ZONE']);
     }
 
