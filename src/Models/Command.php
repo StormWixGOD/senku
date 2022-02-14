@@ -63,7 +63,7 @@ class Command {
     /**
      * Get command from message, return null if not exists
      */
-    private static function ExtractCmd(string $txt)
+    public static function ExtractCmd(string $txt)
     {
         $_ENV['BOT_CMD'] = explode(' ', $_ENV['BOT_CMD']);
         $txt = Utils::MultiExplode([' ', '@', PHP_EOL], trim(strtolower($txt)))[0];
