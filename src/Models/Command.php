@@ -52,8 +52,7 @@ class Command {
     /**
      * Get var
      *
-     * @param string $var_name
-     * @return void
+     * @param string $var_name Variable name
      */
     public static function Var(string $var_name)
     {
@@ -73,6 +72,11 @@ class Command {
         } return null;
     }
 
+    public static function IsCmd(string $msg, string $cmd)
+    {
+        $mg = self::ExtractCmd($msg);
+        return $mg === $cmd;
+    }
     /**
      * Webhook update
      */
@@ -100,5 +104,21 @@ class Command {
         if (isset(self::$location[$cmd])) {
             return self::$location[$cmd];
         } return null;
+    }
+
+    /**
+     * Get chat id from update
+     */
+    public static function ChatId():string
+    {
+        return self::Var('chat_id');
+    }
+
+    /**
+     * Get message id from update
+     */
+    public static function MsgId():string
+    {
+        return self::Var('msg_id');
     }
 }
