@@ -16,6 +16,12 @@ class Start {
 
     private string $path;
 
+    /**
+     * @param string $app_path The path of the application
+     * @param boolean $use_db Whether to use the database
+     * @param boolean $use_webhook Whether to use the telegram webhook
+     * @param boolean $use_updates Whether to use the telegram GetUpdates
+     */
     public function __construct(string  $app_path, bool $use_db = true, bool $use_webhook = true, bool $use_updates = false)
     {
         $dotenv = \Dotenv\Dotenv::createImmutable($app_path);
