@@ -9,10 +9,18 @@ class Command {
 
     private static $cmds = [];
     private static $location = [];
-    
+    private static $up;
     public static string $msg;
     public static string $chat_id;
     public static string $msg_id;
+
+    /**
+     * Set update data
+     */
+    public function __construct(object $up)
+    {
+        self::$up = $up;
+    }
 
     /**
      * Cargar los comandos según el nombre del archivo
@@ -77,13 +85,14 @@ class Command {
         $mg = self::ExtractCmd($msg);
         return $mg === $cmd;
     }
+
     /**
      * Webhook update
      */
-    private static function ExistMsg(?object $up)
+    private static function ExistMsg()
     {
-        self::$msg = $up->message->text 
-                    ?? $up->message->caption
+        self::$msg = self::$up->message->text 
+                    ?? self::$up->message->caption
                     ?? '';
         return (self::$msg != null);
     }
@@ -92,12 +101,12 @@ class Command {
      * Require plugin file
      * @param App\Controllers\Start $bot Bot resource
      */
-    public static function IncludeFile($bot)
+    public static function IncludeFile()
     {
-        if (!self::ExistMsg($bot->up)) return false;
+        if (!self::ExistMsg()) return false;
 
-        self::$chat_id = $bot->up->message->chat->id;
-        self::$msg_id  = $bot->up->message->message_id;
+        self::$chat_id = self::$up->message->chat->id;
+        self::$msg_id  = self::$up->message->message_id;
 
         $cmd = self::ExtractCmd(self::$msg);
 
@@ -120,5 +129,17 @@ class Command {
     public static function MsgId():string
     {
         return self::Var('msg_id');
+    }
+
+    /**
+     * Get user id from update
+     */
+    public static function UserId()
+    {
+        return self::$up->message->from->id
+              ?? self::$up->callback_query->from->id
+              ?? self::$up->message->chat->id
+              ?? self::$up->inline_query->from->id
+              ?? null;
     }
 }
