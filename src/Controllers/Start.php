@@ -15,6 +15,7 @@ class Start {
     public $db;
 
     private string $path;
+    public string $path_log;
 
     /**
      * @param string $app_path The path of the application
@@ -41,7 +42,8 @@ class Start {
      */
     private function Server()
     {
-        Logger::Activate($this->path . '/src/logs/php-error.log', $_ENV['MAX_EXECUTION_TIME']);
+        $this->path_log = $this->path . '/src/logs/php-error.log';
+        Logger::Activate($this->path_log, $_ENV['MAX_EXECUTION_TIME']);
         $this->server->SetTimeZone($_ENV['TIME_ZONE']);
     }
 
