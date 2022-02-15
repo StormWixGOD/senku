@@ -47,7 +47,9 @@ class Bot {
      */
     public function __call($name, $arguments)
     {
-        return $this->request($name, @$arguments[0]);
+        $payload = array_merge($arguments[0] ?? [], $this->opt);
+        Utils::DeleteKeyEmpty($payload);
+        return $this->request($name, $payload);
     }
 
     /**
