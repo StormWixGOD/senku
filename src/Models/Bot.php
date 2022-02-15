@@ -33,6 +33,7 @@ class Bot {
     private function request(string $method, ?array $datas=[], bool $decode = true):mixed
     {
         $url = $this->endpoint . $method;
+        Utils::DeleteKeyEmpty($datas);
         $this->res = Request::Post($url, null, $datas)['response'];
         $this->result = ($decode) ? json_decode($this->res) : $this->res;
         if (!$this->result->ok) {
@@ -48,7 +49,6 @@ class Bot {
     public function __call($name, $arguments)
     {
         $payload = array_merge($arguments[0] ?? [], $this->opt);
-        Utils::DeleteKeyEmpty($payload);
         return $this->request($name, $payload);
     }
 
@@ -113,7 +113,6 @@ class Bot {
         ], $this->opt);
 
         $this->SendAction('typing', $payload['chat_id']);
-        Utils::DeleteKeyEmpty($payload);
 
         return $this->request('sendMessage', $payload);
     }
@@ -132,8 +131,6 @@ class Bot {
             'reply_markup' => json_encode($button),
         ], $this->opt);
 
-        Utils::DeleteKeyEmpty($payload);
-
         return $this->request('editMessageText', $payload);
     }
 
@@ -147,5 +144,25 @@ class Bot {
             'chat_id' => $chat_id,
             'message_id' => $msg_id
         ]);
+    }
+
+    /**
+     * Send general files
+     * @link https://core.telegram.org/bots/api#senddocument
+     */
+    public function Document(string|\CURLFile $document, ?string $caption=null, ?string $chat_id=null, ?string $msg_id=null, $button = '', $parse_mode = 'HTML')
+    {
+        if (file_exists($document)) $document = new \CURLFile(realpath($document));
+        var_dump($document);
+        $payload = array_merge([
+            'chat_id' => $chat_id ?? Cmd::ChatId(),
+            'reply_to_message_id' => $msg_id ?? Cmd::MsgId(),
+            'caption' => $caption,
+            'parse_mode' => $parse_mode,
+            'reply_markup' => json_encode($button),
+            'document' => $document,
+        ], $this->opt);
+
+        return $this->request('sendDocument', $payload);
     }
 }
