@@ -142,4 +142,13 @@ class Command {
               ?? self::$up->inline_query->from->id
               ?? null;
     }
+
+    /**
+     * Get command input
+     */
+    public static function GetContent(int $length = 0, ?string $msg = null)
+    {
+        $msg = $msg ?? self::$msg;
+        return trim(substr($msg, $length));
+    }
 }
