@@ -17,7 +17,7 @@ class Command {
     /**
      * Set update data
      */
-    public function __construct(object $up)
+    public function __construct(?object $up)
     {
         self::$up = $up;
     }
@@ -118,7 +118,7 @@ class Command {
     /**
      * Get chat id from update
      */
-    public static function ChatId():string
+    public static function ChatId():?string
     {
         return self::Var('chat_id');
     }
@@ -126,7 +126,7 @@ class Command {
     /**
      * Get message id from update
      */
-    public static function MsgId():string
+    public static function MsgId():?string
     {
         return self::Var('msg_id');
     }
@@ -134,7 +134,7 @@ class Command {
     /**
      * Get user id from update
      */
-    public static function UserId()
+    public static function UserId():?string
     {
         return self::$up->message->from->id
               ?? self::$up->callback_query->from->id
