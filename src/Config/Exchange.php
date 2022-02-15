@@ -39,7 +39,7 @@ class Exchange
     final public static function Crypto(string $crypto): array
     {
         $crypto = strtoupper($crypto);
-        $data = json_decode(Request::Get(self::API_CRYPTO . $crypto), true);
+        $data = json_decode(Request::Get(self::API_CRYPTO . $crypto)['response'], true);
 
         if ($data['statusCode'] != 200) {
             # Invalid crpyto
