@@ -13,7 +13,7 @@ class Utils {
         if (!is_array($arr) && !is_object($arr)) return;
 
         foreach ($arr as $key => $item) {
-            if (empty($arr[$key]) || $arr[$key] == null) {
+            if (empty($arr[$key]) || $arr[$key] == null || $arr[$key] == '""' || $arr[$key] == "''") {
                 unset($arr[$key]);
             }
         }
