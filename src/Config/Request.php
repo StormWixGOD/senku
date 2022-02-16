@@ -17,7 +17,7 @@ class Request {
      */
     private static function Init(string $url):void
     {
-        self::$ch = null;
+        if (self::$ch) self::$ch = null;
         self::$ch = curl_init($url);
         self::AddOpt(self::$default);
     }
@@ -27,7 +27,6 @@ class Request {
      */
     public static function AddOpt(array $opt):void
     {
-        Utils::DeleteKeyEmpty($opt);
         curl_setopt_array(self::$ch, $opt);
     }
     
@@ -37,11 +36,10 @@ class Request {
     private static function Create(string $url, string $method = 'GET', ?array $headers=null, $post=null): array
     {
         self::Init($url);
-        self::AddOpt([
-            CURLOPT_CUSTOMREQUEST => $method,
-            CURLOPT_HTTPHEADER => $headers,
-            CURLOPT_POSTFIELDS => $post,
-        ]);
+        self::AddOpt([CURLOPT_CUSTOMREQUEST => $method]);
+
+        if ($headers) self::AddOpt([CURLOPT_HTTPHEADER => $headers]);
+        if ($post) self::AddOpt([CURLOPT_POSTFIELDS => $post]);
         // Exec curl
         $response = curl_exec(self::$ch);
         $info = curl_getinfo(self::$ch);
