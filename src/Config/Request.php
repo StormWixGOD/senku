@@ -6,21 +6,42 @@ class Request {
     
     public static $ch;
 
-    private static function Create(string $url, string $method = 'GET', ?array $headers=null, $post=null)
-    {
-        if (self::$ch) self::$ch = null;
-        // Init curl
-        self::$ch = curl_init($url);
+    private static $default = [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYHOST => 0,
+    ];
 
-        curl_setopt_array(self::$ch, [
+    /**
+     * Init a new curl session and delete last curl session
+     */
+    private static function Init(string $url):void
+    {
+        self::$ch = null;
+        self::$ch = curl_init($url);
+        self::AddOpt(self::$default);
+    }
+
+    /**
+     * Add options to curl session
+     */
+    public static function AddOpt(array $opt):void
+    {
+        Utils::DeleteKeyEmpty($opt);
+        curl_setopt_array(self::$ch, $opt);
+    }
+    
+    /**
+     * Create and exucute a curl session
+     */
+    private static function Create(string $url, string $method = 'GET', ?array $headers=null, $post=null): array
+    {
+        self::Init($url);
+        self::AddOpt([
             CURLOPT_CUSTOMREQUEST => $method,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_POSTFIELDS => $post,
         ]);
-        // Add headers and postfield data
-        if ($headers != null) curl_setopt(self::$ch, CURLOPT_HTTPHEADER, $headers);
-        if ($post != null) curl_setopt(self::$ch, CURLOPT_POSTFIELDS, $post);
         // Exec curl
         $response = curl_exec(self::$ch);
         $info = curl_getinfo(self::$ch);
@@ -43,5 +64,23 @@ class Request {
     public static function __callStatic($method, $settings)
     {
         return self::Create(@$settings[0], strtoupper($method), @$settings[1], @$settings[2]);
+    }
+
+    /**
+     * Download file and save to local 
+     * @param string $file_name Path to save file
+     */
+    public static function Download(string $url, ?string $file_name = null)
+    {
+        $file_name = $file_name ?? basename($url) ?? uniqid() . 'file.tmp';
+        $fp = fopen($file_name, 'wb');
+
+        self::Init($url);
+        self::AddOpt([CURLOPT_FILE => $fp, CURLOPT_HEADER => 0]);
+
+        $response = curl_exec(self::$ch);
+        curl_close(self::$ch);
+        fclose($fp);
+        return $response;
     }
 }
