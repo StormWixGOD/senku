@@ -9,6 +9,7 @@ Open terminal and put this
 ```bash
 git clone https://github.com/Mateodioev/senku
 cd senku
+composer install
 ```
 
 Rename `example.htaccess` to `.htaccess` and `example.env` to `.env` after modified `.env` vars
