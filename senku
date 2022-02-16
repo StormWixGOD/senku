@@ -1,0 +1,34 @@
+<?php
+
+use App\Cli\Color;
+
+if (php_sapi_name() !== 'cli') {
+    die('This script must be run from the command line.');
+}
+
+require __DIR__ . '/vendor/autoload.php';
+
+$app = new App\Cli\App();
+$printer = $app->GetPrinter();
+
+$app->Register('server', function() use ($printer) {
+    set_time_limit(0);
+    $printer->Clear(); // Clear the screen
+    $printer->Out(Color::Fg(82, 'Starting server on port 8000 (https://localhost:8000/) '));
+    $printer->Out("\t Pres CTRL+C to stop.");
+    $printer->NewLine();
+    shell_exec('php -S localhost:8000 -t public/');
+});
+
+$app->Register('help', function () use ($app, $printer) {
+    $txt = Color::Fg(13, 'Usage: php senku [command] [options]'). PHP_EOL;
+    $txt .= 'Available commands:'. PHP_EOL;
+
+    foreach ($app->GetAllCmds() as $i => $item) {
+        $txt .= ' - ' . Color::Fg(9, $i) . PHP_EOL;
+        unset($item);
+    }
+    $printer->Display(trim($txt));
+});
+
+$app->Run($argv);
