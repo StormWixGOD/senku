@@ -11,6 +11,7 @@ require __DIR__ . '/vendor/autoload.php';
 $app = new App\Cli\App();
 $printer = $app->GetPrinter();
 
+// Start php dev server 
 $app->Register('server', function() use ($printer) {
     set_time_limit(0);
     $printer->Clear(); // Clear the screen
@@ -18,6 +19,17 @@ $app->Register('server', function() use ($printer) {
     $printer->Out("\t Pres CTRL+C to stop.");
     $printer->NewLine();
     shell_exec('php -S localhost:8000 -t public/');
+});
+
+$app->Register('share', function ($argv) use ($printer) {
+    $def = $argv[2] ?? 'ngrok'; // Default value
+    switch ($def) {
+        case 'ngrok': $cmd = 'ngrok http 8000'; break;
+        default: $cmd = 'echo "Unknown service"'; break;
+    }
+    $printer->Out('Share your server with: ' . $def . "\t\t(Ctrl + C to kick)");
+    $printer->Display(Color::Fg(82, "Web Interface: http://127.0.0.1:4040 \t\t"));
+    shell_exec($cmd);
 });
 
 $app->Register('help', function () use ($app, $printer) {
