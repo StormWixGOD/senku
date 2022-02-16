@@ -33,9 +33,8 @@ class Bot {
     private function request(string $method, ?array $datas=[], bool $decode = true):mixed
     {
         $url = $this->endpoint . $method;
+        $datas = array_merge($datas, $this->opt);
         Utils::DeleteKeyEmpty($datas);
-        $this->res = null;
-        $this->result = null;
         $this->res = Request::Post($url, null, $datas)['response'];
         $this->result = ($decode) ? json_decode($this->res) : $this->res;
         if (!$this->result->ok) {
@@ -106,14 +105,14 @@ class Bot {
      */
     public function SendMsg(string $txt, ?string $chat_id=null, ?string $msg_id=null, $button = '', $parse_mode = 'HTML', $web_page_preview = false)
     {
-        $payload = array_merge([
+        $payload = [
             'chat_id' => $chat_id ?? Cmd::ChatId(),
             'reply_to_message_id' => $msg_id ?? Cmd::MsgId(),
             'text' => $txt,
             'parse_mode' => $parse_mode,
             'reply_markup' => json_encode($button),
             'disable_web_page_preview' => $web_page_preview,
-        ], $this->opt);
+        ];
 
         $this->SendAction('typing', $payload['chat_id']);
 
@@ -126,13 +125,13 @@ class Bot {
      */
     public function EditMsg(string $txt, string $msg_id, ?string $chat_id=null, $button = '', $parse_mode = 'HTML')
     {
-        $payload = array_merge([
+        $payload = [
             'chat_id' => $chat_id ?? Cmd::ChatId(),
             'message_id' => $msg_id,
             'text' => $txt,
             'parse_mode' => $parse_mode,
             'reply_markup' => json_encode($button),
-        ], $this->opt);
+        ];
 
         return $this->request('editMessageText', $payload);
     }
@@ -156,15 +155,15 @@ class Bot {
     public function Document(string|\CURLFile $document, ?string $caption=null, ?string $chat_id=null, ?string $msg_id=null, $button = '', $parse_mode = 'HTML')
     {
         if (file_exists($document)) $document = new \CURLFile(realpath($document));
-        var_dump($document);
-        $payload = array_merge([
+        
+        $payload = [
             'chat_id' => $chat_id ?? Cmd::ChatId(),
             'reply_to_message_id' => $msg_id ?? Cmd::MsgId(),
             'caption' => $caption,
             'parse_mode' => $parse_mode,
             'reply_markup' => json_encode($button),
             'document' => $document,
-        ], $this->opt);
+        ];
 
         return $this->request('sendDocument', $payload);
     }
