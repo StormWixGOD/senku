@@ -5,6 +5,7 @@ namespace App\Config;
 class Request {
     
     public static $ch;
+    public static $url;
 
     private static $default = [
         CURLOPT_RETURNTRANSFER => true,
@@ -15,10 +16,11 @@ class Request {
     /**
      * Init a new curl session and delete last curl session
      */
-    private static function Init(string $url):void
+    public static function Init(string $url):void
     {
         if (self::$ch) self::$ch = null;
-        self::$ch = curl_init($url);
+        self::$url = $url;
+        self::$ch = curl_init(self::$url);
         self::AddOpt(self::$default);
     }
 
@@ -30,6 +32,22 @@ class Request {
         curl_setopt_array(self::$ch, $opt);
     }
     
+    public static function Run()
+    {
+        $response = curl_exec(self::$ch);
+        $info = curl_getinfo(self::$ch);
+        if ($response === false) {
+            error_log('[req] Fail to send request to url: ' . self::$url);
+            error_log('[req] Error (' . curl_errno(self::$ch).'): ' . curl_error(self::$ch));
+        }
+        curl_close(self::$ch);
+        return [
+            'ok' => $response !== false,
+            'info' => $info,
+            'code' => $info['http_code'],
+            'response' => $response,
+        ];
+    }
     /**
      * Create and exucute a curl session
      */
@@ -41,22 +59,7 @@ class Request {
         if ($headers) self::AddOpt([CURLOPT_HTTPHEADER => $headers]);
         if ($post) self::AddOpt([CURLOPT_POSTFIELDS => $post]);
         // Exec curl
-        $response = curl_exec(self::$ch);
-        $info = curl_getinfo(self::$ch);
-        // Logger
-        if ($response === false) {
-            error_log('[req] Fail to send request ' . $method . ' to: ' . $url . "\n\tError(" . curl_errno(self::$ch) . "): " . curl_error(self::$ch));
-        }
-        
-        curl_close(self::$ch);
-        self::$ch = null;
-        // Return response
-        return [
-            'ok' => $response !== false,
-            'info' => $info,
-            'code' => $info['http_code'],
-            'response' => $response,
-        ];
+        return self::Run();
     }
 
     public static function __callStatic($method, $settings)

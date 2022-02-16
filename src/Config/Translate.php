@@ -2,6 +2,7 @@
 
 namespace App\Config;
 
+use App\Config\Request;
 /**
  * TRANSLATE
  * Traducir un texto
@@ -61,19 +62,17 @@ class Translate
         $encode_text = urlencode(self::$input_text);
         $url = sprintf(self::$url_traduc, self::$input_lang, self::$output_lang, $encode_text);
 
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_PROXYPORT, 3128);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        curl_setopt($ch, CURLOPT_ENCODING, 'UTF-8');
-        curl_setopt($ch, CURLOPT_USERAGENT, 'AndroidTranslate/5.3.0.RC02.130475354-53000263 5.1 phone TRANSLATE_OPM5_TEST_1');
-        $output = curl_exec($ch);
-        curl_close($ch);
+        Request::Init($url);
+        Request::AddOpt([
+            CURLOPT_PROXYPORT => 3128,
+            CURLOPT_ENCODING => 'UTF-8',
+            CURLOPT_USERAGENT => 'AndroidTranslate/5.3.0.RC02.130475354-53000263 5.1 phone TRANSLATE_OPM5_TEST_1'
+        ]);
+        $output = Request::Run()['response'];
 
         if (empty($output)) {
             self::$error = true;
-            self::$error_string = 'Error ' . curl_errno($ch) . ': ' . curl_error($ch);
+            self::$error_string = 'Error ' . curl_errno(Request::$ch) . ': ' . curl_error(Request::$ch);
         } else {
             $response = json_decode($output);
             $lineas = count($response[0]);
