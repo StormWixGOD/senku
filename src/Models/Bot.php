@@ -34,10 +34,13 @@ class Bot {
     {
         $url = $this->endpoint . $method;
         Utils::DeleteKeyEmpty($datas);
+        $this->res = null;
+        $this->result = null;
         $this->res = Request::Post($url, null, $datas)['response'];
         $this->result = ($decode) ? json_decode($this->res) : $this->res;
         if (!$this->result->ok) {
             error_log('[bot] Method ' . $method . ' failed: ' . json_encode($datas));
+            error_log('[bot] Response: ' . $this->res);
             error_log('[bot] Description: ' . $this->result->description);
         }
         return $this->result;
