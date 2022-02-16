@@ -1,6 +1,7 @@
 <?php
 
 use App\Cli\Color;
+use App\Config\Request;
 
 if (php_sapi_name() !== 'cli') {
     die('This script must be run from the command line.');
@@ -21,6 +22,7 @@ $app->Register('server', function() use ($printer) {
     shell_exec('php -S localhost:8000 -t public/');
 });
 
+// Share
 $app->Register('share', function ($argv) use ($printer) {
     $def = $argv[2] ?? 'ngrok'; // Default value
     switch ($def) {
@@ -30,6 +32,25 @@ $app->Register('share', function ($argv) use ($printer) {
     $printer->Out('Share your server with: ' . $def . "\t\t(Ctrl + C to kick)");
     $printer->Display(Color::Fg(82, "Web Interface: http://127.0.0.1:4040 \t\t"));
     shell_exec($cmd);
+});
+
+// Set webhook
+$app->Register('setwebhook', function() use ($printer)
+{
+    $token = $printer->Read('Enter your bot token: ');
+    $webhook = $printer->Read('Enter your webhook url: ');
+
+    $url = 'https://api.telegram.org/bot' . $token . '/setWebhook?url=' . $webhook;
+    $printer->Display(Color::Fg(82, "Setting webhook: " . $url));
+
+    $res = Request::Get($url);
+    $res = json_decode($res['response'], true);
+
+    if ($res['ok']) {
+        $printer->Display(Color::Fg(82, "Response: " . $res['description']));
+    } else {
+        $printer->Display(Color::Fg(196, "Response: " . $res['description']));
+    }
 });
 
 $app->Register('help', function () use ($app, $printer) {
