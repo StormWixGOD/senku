@@ -23,6 +23,14 @@ class Printer
         }
         $this->Out("\e[H\e[J");
     }
+
+    public function Read(?string $text)
+    {
+        $txt = trim(readline($text));
+        readline_add_history($txt);
+        return $txt;
+    }
+
     public function Display(string $message)
     {
         $this->NewLine();
