@@ -13,7 +13,7 @@ class Utils {
         if (!is_array($arr) && !is_object($arr)) return;
 
         foreach ($arr as $key => $item) {
-            if (empty($arr[$key]) || $arr[$key] == null || $arr[$key] == '""' || $arr[$key] == "''") {
+            if (empty($arr[$key]) || $arr[$key] === null || $arr[$key] == '""' || $arr[$key] == "''") {
                 unset($arr[$key]);
             }
         }
@@ -26,5 +26,17 @@ class Utils {
     {
         $str = str_replace($explodes, $explodes[0], $str);
         return explode($explodes[0], $str);
+    }
+
+    /**
+     * Remove html entities
+     */
+    public static function QuitHtml(?string $str)
+    {
+        return @str_replace(
+            ['<', '>', '≤', '≥'],
+            ['&lt;', '&gt;', '&le;', '&ge;'],
+            $str
+        );
     }
 }
