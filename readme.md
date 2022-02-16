@@ -1,0 +1,29 @@
+# Senku bot 🤖
+
+Php based telegram bot
+
+## Installation
+
+Open terminal and put this
+
+```bash
+mkdir senku
+cd senku
+git clone https://github.com/Mateodioev/senku
+```
+
+Rename `example.htaccess` to `.htaccess` and `example.env` to `.env` after modified `.env` vars
+
+### Cli terminal
+
+```bash
+php senku help        # Show commands
+php senku server      # Start php dev server on port 8000
+php senku share ngrok # Share port 8000 with ngrok
+```
+
+### Set webhook
+
+```bash
+curl 'https://api.telegram.org/bot<BOT_TOKEN>/setwebhook?url=where your hosted the files'
+```
