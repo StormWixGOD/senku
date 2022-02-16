@@ -73,7 +73,10 @@ class Command {
     public static function ExtractCmd(string $txt)
     {
         $_ENV['BOT_CMD'] = explode(' ', $_ENV['BOT_CMD']);
-        $txt = Utils::MultiExplode([' ', '@', PHP_EOL], trim(strtolower($txt)))[0];
+        $txt = Utils::MultiExplode(
+            [' ', '@', PHP_EOL],
+            trim(strtolower(str_replace(['@', $_ENV['BOT_USERNAME']], '', $txt)))
+        )[0];
 
         if (in_array($txt[0], $_ENV['BOT_CMD'])) {
             return substr($txt, 1);
