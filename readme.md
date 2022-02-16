@@ -7,9 +7,9 @@ Php based telegram bot
 Open terminal and put this
 
 ```bash
-mkdir senku
-cd senku
 git clone https://github.com/Mateodioev/senku
+cd senku
+composer install
 ```
 
 Rename `example.htaccess` to `.htaccess` and `example.env` to `.env` after modified `.env` vars
