@@ -167,4 +167,22 @@ class Bot {
 
         return $this->request('sendDocument', $payload);
     }
+
+    /**
+     * Returns basic information about the bot in form of a User object.
+     * @link https://core.telegram.org/bots/api#getme
+     */
+    public function Me()
+    {
+        return $this->request('getMe');
+    }
+
+    /**
+     * Use this method to get basic info about a file and prepare it for downloading.
+     * @link https://core.telegram.org/bots/api#getfile
+     */
+    public function GetFile(string $file_id)
+    {
+        return $this->request('getFile', ['file_id' => $file_id]);
+    }
 }

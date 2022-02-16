@@ -23,7 +23,7 @@ if (!isset($up->message->reply_to_message->document) || empty($name)) {
 
 } else {
     // Download file
-    $file = $bot->getFile(['file_id' => $up->message->reply_to_message->document->file_id]);
+    $file = $bot->GetFile($up->message->reply_to_message->document->file_id);
 
     $size = $file->result->file_size;
     $file_url = 'https://api.telegram.org/file/bot' . $bot->token . '/' . $file->result->file_path;
