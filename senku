@@ -27,7 +27,7 @@ $app->Register('share', function ($argv) use ($printer) {
     $def = $argv[2] ?? 'ngrok'; // Default value
     switch ($def) {
         case 'ngrok': $cmd = 'ngrok http 8000'; break;
-        default: $cmd = 'echo "Unknown service"'; break;
+        default: $printer->Display(Color::Bg(150, Color::Fg(232, 'Invalid arg ' . $def))); die; break;
     }
     $printer->Out('Share your server with: ' . $def . "\t\t(Ctrl + C to kick)");
     $printer->Display(Color::Fg(82, "Web Interface: http://127.0.0.1:4040 \t\t"));
