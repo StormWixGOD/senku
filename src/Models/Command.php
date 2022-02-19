@@ -154,4 +154,5 @@ class Command {
         $msg = $msg ?? self::$msg;
         return trim(substr($msg, $length));
     }
+    
 }
