@@ -16,6 +16,8 @@
     "minimum-stability": "dev",
     "require": {
         "php": "^8.0",
+        "ext-json": "*",
+        "ext-curl": "*",
         "vlucas/phpdotenv": "5.4.x-dev",
         "php-parallel-lint/php-console-color": "dev-master"
     }
