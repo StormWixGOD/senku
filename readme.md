@@ -20,6 +20,7 @@ Rename `example.htaccess` to `.htaccess` and `example.env` to `.env` after modif
 php senku help        # Show commands
 php senku server      # Start php dev server on port 8000
 php senku share ngrok # Share port 8000 with ngrok
+php senku create      # Autocreate .env and .htaccess files with defaul values
 ```
 
 ### Set webhook
