@@ -7,6 +7,7 @@ class Printer
     public function Out(string $text)
     {
         echo $text;
+        return $this;
     }
 
     public function NewLine()

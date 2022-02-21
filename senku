@@ -17,8 +17,7 @@ $app->Register('server', function() use ($printer) {
     set_time_limit(0);
     $printer->Clear(); // Clear the screen
     $printer->Out(Color::Fg(82, 'Starting server on port 8000 (https://localhost:8000/) '));
-    $printer->Out("\t Pres CTRL+C to stop.");
-    $printer->NewLine();
+    $printer->Out("\t Pres CTRL+C to stop.")->NewLine();
     shell_exec('php -S localhost:8000 -t public/');
 });
 
@@ -35,8 +34,7 @@ $app->Register('share', function ($argv) use ($printer) {
 });
 
 // Set webhook
-$app->Register('setwebhook', function() use ($printer)
-{
+$app->Register('setwebhook', function() use ($printer) {
     $token = $printer->Read('Enter your bot token: ');
     $webhook = $printer->Read('Enter your webhook url: ');
 
@@ -53,6 +51,34 @@ $app->Register('setwebhook', function() use ($printer)
     }
 });
 
+$app->Register('create', function () use ($printer) {
+    $printer->Out('This function create a .env and .htaccess files with defaults values')->NewLine();
+
+    $continue = strtolower($printer->Read('Are you sure you want to continue? Yes/No: '));
+    
+    if (!in_array($continue, ['yes', 'y'])) {
+        $printer->Out('Input: ' . $continue)->NewLine();
+        $printer->Display(Color::Fg(196, 'Aborted'));
+        die;
+    }
+
+    $printer->Out('Creating .env and .htaccess files');
+    $c1 = copy(__DIR__ . '/example.env', __DIR__ . '/.env');
+    $c2 = copy(__DIR__ . '/example.htaccess', __DIR__ . '/.htaccess');
+
+    if (!$c1 || !$c2) {
+        // Failed
+        $error = error_get_last();
+        $printer->Out(Color::Fg(196, 'Failed'))->NewLine();
+        $printer->Out("Copy Error: " . $error['type'] . "\n".$error['message'])->NewLine();
+    } else {
+        // Success
+        $printer->Display(Color::Fg(82, 'Success'));
+    }
+
+});
+
+// Show help
 $app->Register('help', function () use ($app, $printer) {
     $txt = Color::Fg(13, 'Usage: php senku [command] [options]'). PHP_EOL;
     $txt .= 'Available commands:'. PHP_EOL;
