@@ -1,4 +1,5 @@
 # Senku bot 🤖
+[![CodeFactor](https://www.codefactor.io/repository/github/mateodioev/senku/badge)](https://www.codefactor.io/repository/github/mateodioev/senku)
 
 Php based telegram bot
 
